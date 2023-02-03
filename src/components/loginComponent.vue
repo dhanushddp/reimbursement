@@ -19,7 +19,8 @@
             <input type="password" id="form1Example23" class="form-control form-control-lg" v-model="user.password" />
             <label class="form-label" for="form1Example23" >Password</label>
           </div>
-          <p v-if="isCorrect" style="color:red;font-size: 14px;">Incorrect Credentials</p>
+          <p v-if="isCorrect" style="color:red;font-size: 14px;">Please fill all details</p>
+          <p v-if="isMatched" style="color:red;font-size: 14px;">User Not found</p>
 
           <div class="d-flex justify-content-around align-items-center mb-4">
             <!-- Checkbox -->

@@ -25,7 +25,8 @@ export default{
             isPasswordMismatched : false,
             isClaim:false,
             isNotEmployee:false,
-            isContact:false
+            isContact:false,
+            isMatched:false
         }
     },
     computed:{
@@ -36,39 +37,54 @@ export default{
         userAuth(){
          if(this.user.email &&  this.user.password){
             axios.post(`/two/employee/api/auth`,{email:this.user.email,password:this.user.password}).then(()=>{
-                axios.get(`/two/employee/api/getEmployeeDetailsByEmail?emailId=${this.user.email}`).then((response)=>{
-                    this.getEmployeeInfo(response.data.data)
-                    if(response.data.data.role=="EMPLOYEE"){
-                        this.$router.push({ path: "/employeePortal" })
-                        localStorage.setItem("employee", JSON.stringify(this.user.email));
-
-                    }
-                    else if(response.data.data.role=="MANAGER"){
-                        this.$router.push({ path: "/managerPortal"})
-                        localStorage.setItem("manager", JSON.stringify(this.user.email));
-
-
-                    }else if(response.data.data.role=="FINANCIER"){
-                        this.$router.push({ path: "/financePortal"})
-                        localStorage.setItem("finance", JSON.stringify(this.user.email));
-
-
-
-                    }else if(response.data.data.role=="DIRECTOR"){
-                        this.$router.push({ path: "/directorPortal"})
-                        localStorage.setItem("director", JSON.stringify(this.user.email));
-
-                    }else if(response.data.data.role=="PRESIDENT"){
-                        this.$router.push({ path: "/presidentPortal"})
-                        localStorage.setItem("president", JSON.stringify(this.user.email));
-                    }
+                
+                    axios.get(`/two/employee/api/getEmployeeDetailsByEmail?emailId=${this.user.email}`).then((response)=>{
+                        this.getEmployeeInfo(response.data.data)
+                        if(response.data.data.role=="EMPLOYEE"){
+                            this.$router.push({ path: "/employeePortal" })
+                            localStorage.setItem("employee", JSON.stringify(this.user.email));
     
-                    
-                })
+                        }
+                        else if(response.data.data.role=="MANAGER"){
+                            this.$router.push({ path: "/managerPortal"})
+                            localStorage.setItem("manager", JSON.stringify(this.user.email));
+    
+    
+                        }else if(response.data.data.role=="FINANCIER"){
+                            this.$router.push({ path: "/financePortal"})
+                            localStorage.setItem("finance", JSON.stringify(this.user.email));
+    
+    
+    
+                        }else if(response.data.data.role=="DIRECTOR"){
+                            this.$router.push({ path: "/directorPortal"})
+                            localStorage.setItem("director", JSON.stringify(this.user.email));
+    
+                        }else if(response.data.data.role=="PRESIDENT"){
+                            this.$router.push({ path: "/presidentPortal"})
+                            localStorage.setItem("president", JSON.stringify(this.user.email));
+                        }
+        
+                        
+                    })
+
+                  
+                
+              
+            }).catch(()=>{
+                this.isMatched=true
+                setTimeout(() => {
+                    this.isMatched=false
+
+                }, 2000);
             })
             console.log(this.user)
          }else{
             this.isCorrect = true
+            setTimeout(() => {
+                this.isCorrect = false
+
+            }, 2000);
          }
         },
         Register(){
@@ -138,11 +154,7 @@ export default{
                 axios.post(`/two/employee/api/addEmployee`,{name:this.registerUser.userName,phone:this.registerUser.contact,
                     email:this.registerUser.email,jobTitle:this.registerUser.jobTitle,role:this.registerUser.role,
                     managerId:this.registerUser.managerId,password:this.registerUser.password})
-
-                    this.$bvToast.toast(`Registered`, {
-                        title: 'Confirmation',
-                        autoHideDelay: 6000
-                      })
+                
                 console.log(this.registerUser)
             
           }

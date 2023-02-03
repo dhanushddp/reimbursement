@@ -67,7 +67,7 @@
                <div class="col col-7">Actions</div> 
             </li>
             <li v-if="retrieveManagerClaims.length==0" style="justify-content:center" class="table-row">
-              No data Found
+              No claims Found
             </li>
              <li  class="table-row cen" v-for="(claim,index) in retrieveManagerClaims" :key="index">
               <div class="col col-1" data-label="ClaimId">{{claim.claimId }}</div>
@@ -393,7 +393,7 @@
               <div class="col col-7">Actions</div> 
             </li>
             <li v-if="retrieveTeamClaims.length==0" style="justify-content:center" class="table-row">
-              No data Found
+              No claims Found
             </li>
             <li  class="table-row cen" v-for="(claim,index) in retrieveTeamClaims" :key="index">
               <div class="col col-1" data-label="ClaimId">{{claim.claimId }}-{{claim.employeeName }}</div> 
