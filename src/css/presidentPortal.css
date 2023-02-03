@@ -1,0 +1,320 @@
+.userHeadSection{
+    position: sticky;
+     top: 0;
+     left: 0;
+     border: 1px rgba(0, 148, 217, 255);
+     width: 100%;
+     margin: -60px 0px 0px 0px;
+     overflow: auto;
+     z-index: 10;
+     height: 50px;
+     box-shadow: -10px 2px 20px 0px;
+     background-color: #28364d;
+    }
+  .filter{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 3rem;
+  margin-right: 7%;
+  margin-top: 10px;
+  }   
+  .All:hover,.rejected:hover,.accepted:hover,.Pending:hover{
+  background-color: grey; }
+  .All {
+  border: 1px solid grey;
+  width: max-content;
+  color: black;
+  border-radius: 10px;
+  padding: 5px 10px 5px 10px;
+  font-size: 14px;
+  }
+  .Pending{
+  border: 1px solid grey;
+  width: max-content;
+  color: black;
+  border-radius: 10px;
+  padding: 5px 10px 5px 10px;
+  font-size: 14px;
+  }
+  .accepted {
+  border: 1px solid grey;
+  width: max-content;
+  color: black;
+  border-radius: 10px;
+  padding: 5px 10px 5px 10px;
+  font-size: 14px;
+  }
+  .rejected {
+  border: 1px solid grey;
+  width: max-content;
+  color: black;
+  border-radius: 10px;
+  padding: 5px 10px 5px 10px;
+  font-size: 14px;
+  }
+  
+  
+  .claimContainer{
+  background-color: #fff;
+    border-radius: 8px;
+    border: 2px solid #e7ecf2;
+    box-shadow: 0 4px 12px #0420400d;
+    min-height: 500px;
+    max-height: max-content;
+  
+    margin-top: 70px;
+  
+  }
+  .header{
+  position: absolute;
+  margin-top: 30px;
+  left:20px;
+  font-size: 18px;
+  font-weight: 700;
+  }
+  .addClaimContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  
+  }
+  .addClaim{
+  
+  border-radius:10px;
+  
+  margin-top: 30px;
+  
+  
+  
+  
+  }
+  .Submit{
+  background-color: #8ea5f2;
+  border: none;
+  }
+   
+   .userHead{
+       position:absolute;
+       right: 10px;
+       padding: 10px;
+   }
+   .userName{
+       display: inline;
+       margin-right: 40px;
+       margin-left: 5px;
+       font-size: 16px;
+       color: white;
+   }
+   
+     .addRequest{
+       margin-top:50px;
+       margin-left:20px;
+       margin-right:20px;
+       display: flex;
+       justify-content: space-between;
+     }
+     .btn{
+       display: inline-block;
+       position: relative;
+       text-decoration: none;
+       color: rgba(3, 169, 244, 0.54);
+     
+       border-radius: 50%;
+       text-align: center;
+       background:#c7c7c7;
+       margin-right:100px;
+       margin-top:-10px
+   }
+   .btn .fa {
+       position: absolute;
+       content: '';
+       width: 50px;
+       height: 50px;
+       line-height: 50px;
+       vertical-align: middle; 
+       left: 10px;
+       top: 9px;
+       border-radius: 50%;
+       font-size: 40px;
+       background-image: linear-gradient(#e8e8e8 0%, #d6d6d6 100%);
+       text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.66);
+       box-shadow: inset 0 2px 0 rgba(255,255,255,0.5), 0 2px 2px rgba(0, 0, 0, 0.19);
+       border-bottom: solid 2px #b5b5b5;
+     }
+     
+   .btn .fa:active{
+       background-image: -webkit-linear-gradient(#efefef 0%, #d6d6d6 100%);
+       box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 2px 2px rgba(0, 0, 0, 0.19);
+       border-bottom: solid 2px #d8d8d8;
+   
+   }
+   
+   .addResultTag{
+     display: flex;
+     font-size:20px;
+     flex-direction: row;
+     justify-content:flex-end;
+     margin-right: 5%;
+     font-weight: 500;
+   
+   }
+   body {
+    font-family: 'lato', sans-serif;
+  }
+  .col-7{
+    text-align: end;
+  }
+  .container {
+    width: 100%;
+    
+  }
+  h2 {
+    font-size: 26px;
+    margin: 20px 0;
+    text-align: center;
+  }
+  h2 small {
+    font-size: 0.5em;
+  }
+  .responsive-table{
+    width: 100%;
+  
+  }
+  .responsive-table li {
+    border-radius: 3px;
+    padding: 25px 30px;
+    display: flex;
+    width: 100%;
+  
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+  }
+  .responsive-table .table-header {
+  
+    background-color: #91d9f1;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  
+  }
+  .responsive-table .table-row {
+    width: 100%;
+  flex-wrap: wrap;
+    background-color: #fff;
+    box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+  }
+  .responsive-table .col-1 {
+    flex-basis: 5%;
+  }
+  .responsive-table .col-2 {
+    flex-basis: 20%;
+  }
+  .responsive-table .col-3 {
+    flex-basis: 15%;
+  }
+  .responsive-table .col-4 {
+    flex-basis:15%;
+  }
+  .responsive-table .col-5 {
+    flex-basis: 15%;
+  }
+  .responsive-table .col-6 {
+    flex-basis: 15%;
+  }
+  .responsive-table .col-7 {
+    flex-basis: 15%;
+  }
+  
+  
+  .red{
+    color:red;
+    
+  
+  
+  }
+  .red:hover{
+    background-color: rgb(252, 24, 24);
+    color:white;
+  }
+  .yellow:hover{
+    background-color: rgb(255, 193, 94);
+    color:rgb(0, 0, 0);
+  }
+  .green:hover{
+    background-color: rgb(155, 255, 151);
+    color:rgb(0, 0, 0);
+  }
+  .yellow{
+    color: orange;
+  
+  }
+  
+  .green{
+    color: green;
+   
+  
+  }
+  .pageNatiom{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .Back{
+  
+    padding: 10px 10px 10px 10px;
+    width:fit-content;
+    border-radius: 20px;
+    box-shadow: 4px 5px 3px 0px;
+    border:2px solid #f1eaea;
+    color: rgb(47, 89, 89);
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  
+  }
+  .Next{
+  
+  
+      padding: 10px 10px 10px 10px;
+      width:fit-content;
+      border-radius: 20px;
+      box-shadow: 4px 5px 3px 0px;
+      border:2px solid #f1eaea;
+      color: rgb(47, 89, 89);
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+      background-color:rgb(205, 238, 238);
+    
+  }
+  
+  .Back:hover{
+    background-color: #ffccc3;
+  }
+  .Next:hover{
+    background-color: #91ff9a;
+  }
+  
+  
+  
+  @media all and (max-width: 767px) {
+    .responsive-table .table-header {
+      display: none;
+   }
+    .responsive-table li {
+      display: block;
+   }
+    .responsive-table .col {
+      flex-basis: 100%;
+   }
+    .responsive-table .col {
+      display: flex;
+      padding: 10px 0;
+   }
+    .responsive-table .col:before {
+      color: #6c7a89;
+      padding-right: 10px;
+      content: attr(data-label);
+      flex-basis: 50%;
+      text-align: right;
+   }
+  }
+  
+  
