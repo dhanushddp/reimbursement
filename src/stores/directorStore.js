@@ -1,3 +1,4 @@
+import reimbursementService from "@/services/reimbursementService"
 const directorStore = {   
     state: {
        DirectorDetails:{},
@@ -34,15 +35,32 @@ const directorStore = {
          getCategories({commit},data){
             commit('setCategories',data)
          },
-         getDirectorClaims({commit},data){
-            commit('setDirectorClaims',data)
+         getDirectorClaims({commit},{success,fail,employeeId}){
+                reimbursementService.getOwnClaims({
+         
+                        success:(myClaims,employeeClaims)=>{
+                            console.log(success)
+                            commit('setDirectorClaims',myClaims),
+                            commit('setDirectorTeamClaims',employeeClaims)
+    
+    
+                    },
+                    fail,
+                    employeeId
+    
+    
+                })
+            
          },
          getSelectedClaim({commit},data){
             commit('setSelectedClaim',data)
          },
          getDirectorTeamClaims({commit},data){
            commit('setDirectorTeamClaims',data)
-         }
+         },
+         getDirectorClaimsStatus({commit},data){
+            commit('setDirectorClaims',data)
+          },
     },
     getters: {
        retrieveDirectorInfo(state){

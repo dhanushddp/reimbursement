@@ -50,12 +50,8 @@ export default{
     axios.get(`/two/employee/api/getEmployeeDetailsByEmail?emailId=${this.email}`).then((res)=>{
       this.getDirectorInfo(res.data.data)
       this.DirectorInfo=res.data.data
-      axios.get(`/two/claim/api/getClaimsByEmployeeId/${res.data.data.id}`).then((resp)=>{
-        this.getDirectorClaims(resp.data.data.myClaims)
-        this.getDirectorTeamClaims(resp.data.data.employeeClaims)
-        this.assignedClaims=resp.data.data.myClaims
-        console.log(this.assignedClaims)
-      })
+      this.getDirectorClaims({success:this.onSuccess,fail:this.onFail,employeeId:res.data.data.id})
+
       console.log(res.data.data)
     })
   
@@ -64,7 +60,14 @@ export default{
      ...mapGetters('directorStore',['retrieveDirectorClaims','retrieveSelectedClaim','retrieveDirectorTeamClaims'])
   },
   methods:{
-    ...mapActions('directorStore',['getDirectorInfo','getDirectorClaims','getSelectedClaim','getDirectorTeamClaims']),
+    onSuccess(){
+      console.log("success")
+    },
+    onFail(){
+      console.log("fail")
+
+    },
+    ...mapActions('directorStore',['getDirectorInfo','getDirectorClaims','getSelectedClaim','getDirectorTeamClaims','getDirectorClaimsStatus']),
       submitForm(){
           this.form.stationeries = this.value
           if(this.form.category)
@@ -77,13 +80,8 @@ export default{
                    if(this.form.claimAmount && this.form.description){
                     axios.post(`/two/claim/api/addClaim`,{employeeId:this.DirectorInfo.id,claimCategoryId:parseInt(this.form.category),imageUrl:null,fromDate:new Date(this.form.startDate),toDate:new Date(this.form.endDate),officeStationeryType:null,description:this.form.description,claimAmount:this.form.claimAmount}).then((res)=>{
                       console.log(res)
-                      axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.DirectorInfo.id}`).then((resp)=>{
-                        this.getDirectorClaims(resp.data.data.myClaims)
-                        window.location.reload()
+                      this.getDirectorClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.DirectorInfo.id})
 
-                        this.assignedClaims=resp.data.data.myClaims
-                        console.log(this.assignedClaims)
-                      })
                     })
                    }
 
@@ -101,13 +99,8 @@ export default{
                     if(this.form.claimAmount && this.form.description){
                       axios.post(`/two/claim/api/addClaim`,{employeeId:this.DirectorInfo.id,claimCategoryId:parseInt(this.form.category),imageUrl:null,fromDate:null,toDate:null,officeStationaryType:this.stationeriesValue,description:this.form.description,claimAmount:this.form.claimAmount}).then((res)=>{
                       console.log(res)
-                      axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.DirectorInfo.id}`).then((resp)=>{
-                        this.getDirectorClaims(resp.data.data.myClaims)
-                        window.location.reload()
+                      this.getDirectorClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.DirectorInfo.id})
 
-                        this.assignedClaims=resp.data.data.myClaims
-                        console.log(this.assignedClaims)
-                      })
                     })
                      }else{
                       this.allDetails=true
@@ -134,13 +127,8 @@ export default{
                 if(this.form.claimAmount && this.form.description){
                   axios.post(`/two/claim/api/addClaim`,{employeeId:this.DirectorInfo.id,claimCategoryId:parseInt(this.form.category),imageUrl:null,fromDate:null,toDate:null,officeStationeryType:null,description:this.form.description,claimAmount:this.form.claimAmount}).then((res)=>{
                     console.log(res)
-                    axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.DirectorInfo.id}`).then((resp)=>{
-                      this.getDirectorClaims(resp.data.data.myClaims)
-                      window.location.reload()
+                    this.getDirectorClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.DirectorInfo.id})
 
-                      this.assignedClaims=resp.data.data.myClaims
-                      console.log(this.assignedClaims)
-                    })
                   })
                   console.log(this.form)
                  }else{
@@ -166,13 +154,13 @@ export default{
         if(status=="ALL")
         {
           axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.DirectorInfo.id}`).then((resp)=>{
-            this.getDirectorClaims(resp.data.data.myClaims)
+            this.getDirectorClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.DirectorInfo.id})
             this.assignedClaims=resp.data.data
             console.log(this.assignedClaims)
           })
         }else{
           axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.DirectorInfo.id}?status=${status}`).then((resp)=>{
-            this.getDirectorClaims(resp.data.data.myClaims)
+            this.getDirectorClaimsStatus(resp.data.data.myClaims)
             this.assignedClaims=resp.data.data
             console.log(this.assignedClaims)
           })
@@ -286,9 +274,8 @@ export default{
          
           if(this.retrieveSelectedClaim.statusOfApprovers[0].status=='PENDING' && this.retrieveSelectedClaim.statusOfApprovers[1].status=='PENDING'){
             axios.delete(`/two/claim/api/deleteClaimUsingId/${claim.claimId}`).then(()=>{
-              axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.DirectorInfo.id}`).then((res)=>{
-                this.getDirectorClaims(res.data.data.myClaims)
-              })
+              this.getDirectorClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.DirectorInfo.id})
+
             })
           }
           })
@@ -299,9 +286,8 @@ export default{
           if((this.retrieveSelectedClaim.statusOfApprovers[0].status=='REJECTED' && this.retrieveSelectedClaim.statusOfApprovers[1].status=='REJECTED' )||
           (this.retrieveSelectedClaim.statusOfApprovers[0].status=='APPROVED' && this.retrieveSelectedClaim.statusOfApprovers[1].status=='APPROVED' ) ){
             axios.delete(`/two/claim/api/deleteClaimUsingId/${claim.claimId}`).then(()=>{
-              axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.DirectorInfo.id}`).then((res)=>{
-                this.getDirectorTeamClaims(res.data.data.employeeClaims)
-              })
+              this.getDirectorClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.DirectorInfo.id})
+
             })
           }
       })
@@ -310,21 +296,16 @@ export default{
         if(this.retrieveSelectedClaim.statusOfApprovers[0].status=='PENDING'){
 
         axios.put('/two/claim/api/updateClaimStatus',{claimId:this.retrieveSelectedClaim.claimId,approvedClaimAmount:this.retrieveSelectedClaim.amount,status:"APPROVED",approverId:this.DirectorInfo.id}).then(()=>{
-          axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.DirectorInfo.id}`).then((resp)=>{
-            this.getDirectorTeamClaims(resp.data.data.employeeClaims)
+          this.getDirectorClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.DirectorInfo.id})
 
-          })
         })}
       },
       reject(){
         if(this.retrieveSelectedClaim.statusOfApprovers[0].status=='PENDING'){
 
         axios.put('/two/claim/api/updateClaimStatus',{claimId:this.retrieveSelectedClaim.claimId,approvedClaimAmount:this.retrieveSelectedClaim.amount,status:"REJECTED",approverId:this.DirectorInfo.id}).then(()=>{
-          axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.DirectorInfo.id}`).then((resp)=>{
-            this.getDirectorTeamClaims(resp.data.data.employeeClaims)
-          
+          this.getDirectorClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.DirectorInfo.id})
 
-          })
         })}
       }
 

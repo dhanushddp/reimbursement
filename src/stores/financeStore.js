@@ -1,3 +1,4 @@
+import reimbursementService from "@/services/reimbursementService"
 const financeStore = {   
     state: {
        FinanceDetails:{},
@@ -34,15 +35,32 @@ const financeStore = {
          getCategories({commit},data){
             commit('setCategories',data)
          },
-         getFinanceClaims({commit},data){
-            commit('setFinanceClaims',data)
+         getFinanceClaims({commit},{success,fail,employeeId}){
+                reimbursementService.getOwnClaims({
+         
+                        success:(myClaims,employeeClaims)=>{
+                            console.log(success)
+                            commit('setFinanceClaims',myClaims),
+                            commit('setFinanceTeamClaims',employeeClaims)
+    
+    
+                    },
+                    fail,
+                    employeeId
+    
+    
+                })
+            
          },
          getSelectedClaim({commit},data){
+            
             commit('setSelectedClaim',data)
          },
          getFinanceTeamClaims({commit},data){
            commit('setFinanceTeamClaims',data)
-         }
+         },getFinanceClaimsStatus({commit},data){
+            commit('setFinanceClaims',data)
+          },
     },
     getters: {
        retrieveFinanceInfo(state){

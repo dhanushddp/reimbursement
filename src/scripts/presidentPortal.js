@@ -49,12 +49,8 @@ export default{
     axios.get(`/two/employee/api/getEmployeeDetailsByEmail?emailId=${this.email}`).then((res)=>{
       this.getPresidentInfo(res.data.data)
       this.PresidentInfo=res.data.data
-      axios.get(`/two/claim/api/getClaimsByEmployeeId/${res.data.data.id}`).then((resp)=>{
-        this.getPresidentClaims(resp.data.data.myClaims)
-        this.getPresidentTeamClaims(resp.data.data.employeeClaims)
-        this.assignedClaims=resp.data.data.myClaims
-        console.log(this.assignedClaims)
-      })
+      this.getPresidentClaims({success:this.onSuccess,fail:this.onFail,employeeId:res.data.data.id})
+
       console.log(res.data.data)
     })
   
@@ -63,8 +59,15 @@ export default{
      ...mapGetters('presidentStore',['retrievePresidentClaims','retrieveSelectedClaim','retrievePresidentTeamClaims'])
   },
   methods:{
-    ...mapActions('presidentStore',['getPresidentInfo','getPresidentClaims','getSelectedClaim','getPresidentTeamClaims']),
-      submitForm(){
+    ...mapActions('presidentStore',['getPresidentInfo','getPresidentClaims','getSelectedClaim','getPresidentTeamClaims','getPresidentClaimsStatus']),
+    onSuccess(){
+      console.log("success")
+    },
+    onFail(){
+      console.log("fail")
+
+    }, 
+    submitForm(){
           this.form.stationeries = this.value
           if(this.form.category)
           {
@@ -76,13 +79,8 @@ export default{
                    if(this.form.claimAmount && this.form.description){
                     axios.post(`/two/claim/api/addClaim`,{employeeId:this.PresidentInfo.id,claimCategoryId:parseInt(this.form.category),imageUrl:null,fromDate:new Date(this.form.startDate),toDate:new Date(this.form.endDate),officeStationeryType:null,description:this.form.description,claimAmount:this.form.claimAmount}).then((res)=>{
                       console.log(res)
-                      axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.PresidentInfo.id}`).then((resp)=>{
-                        this.getPresidentClaims(resp.data.data.myClaims)
-                        window.location.reload()
+                      this.getPresidentClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.PresidentInfo.id})
 
-                        this.assignedClaims=resp.data.data.myClaims
-                        console.log(this.assignedClaims)
-                      })
                     })
                    }
 
@@ -100,13 +98,8 @@ export default{
                     if(this.form.claimAmount && this.form.description){
                       axios.post(`/two/claim/api/addClaim`,{employeeId:this.PresidentInfo.id,claimCategoryId:parseInt(this.form.category),imageUrl:null,fromDate:null,toDate:null,officeStationaryType:this.stationeriesValue,description:this.form.description,claimAmount:this.form.claimAmount}).then((res)=>{
                       console.log(res)
-                      axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.PresidentInfo.id}`).then((resp)=>{
-                        this.getPresidentClaims(resp.data.data.myClaims)
-                        window.location.reload()
+                      this.getPresidentClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.PresidentInfo.id})
 
-                        this.assignedClaims=resp.data.data.myClaims
-                        console.log(this.assignedClaims)
-                      })
                     })
                      }else{
                       this.allDetails=true
@@ -133,13 +126,8 @@ export default{
                 if(this.form.claimAmount && this.form.description){
                   axios.post(`/two/claim/api/addClaim`,{employeeId:this.PresidentInfo.id,claimCategoryId:parseInt(this.form.category),imageUrl:null,fromDate:null,toDate:null,officeStationeryType:null,description:this.form.description,claimAmount:this.form.claimAmount}).then((res)=>{
                     console.log(res)
-                    axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.PresidentInfo.id}`).then((resp)=>{
-                      this.getPresidentClaims(resp.data.data.myClaims)
-                      window.location.reload()
+                    this.getPresidentClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.PresidentInfo.id})
 
-                      this.assignedClaims=resp.data.data.myClaims
-                      console.log(this.assignedClaims)
-                    })
                   })
                   console.log(this.form)
                  }else{
@@ -164,14 +152,11 @@ export default{
       calStatus(status){
         if(status=="ALL")
         {
-          axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.PresidentInfo.id}`).then((resp)=>{
-            this.getPresidentClaims(resp.data.data.myClaims)
-            this.assignedClaims=resp.data.data
-            console.log(this.assignedClaims)
-          })
+          this.getPresidentClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.PresidentInfo.id})
+
         }else{
           axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.PresidentInfo.id}?status=${status}`).then((resp)=>{
-            this.getPresidentClaims(resp.data.data.myClaims)
+            this.getPresidentClaimsStatus(resp.data.data.myClaims)
             this.assignedClaims=resp.data.data
             console.log(this.assignedClaims)
           })
@@ -181,11 +166,8 @@ export default{
       calStatus1(status){
         if(status=="ALL")
         {
-          axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.PresidentInfo.id}`).then((resp)=>{
-            this.getPresidentTeamClaims(resp.data.data.employeeClaims)
-            this.teamClaims=resp.data.data.employeeClaims
-            console.log(this.ManagerClaims)
-          })
+          this.getPresidentClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.PresidentInfo.id})
+
         }else{
           axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.PresidentInfo.id}?status=${status}`).then((resp)=>{
             this.getPresidentTeamClaims(resp.data.data.employeeClaims)
@@ -285,9 +267,8 @@ export default{
          
           if(this.retrieveSelectedClaim.statusOfApprovers[0].status=='PENDING' && this.retrieveSelectedClaim.statusOfApprovers[1].status=='PENDING'){
             axios.delete(`/two/claim/api/deleteClaimUsingId/${claim.claimId}`).then(()=>{
-              axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.PresidentInfo.id}`).then((res)=>{
-                this.getPresidentClaims(res.data.data.myClaims)
-              })
+              this.getPresidentClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.PresidentInfo.id})
+
             })
           }
           })
@@ -298,9 +279,8 @@ export default{
           if((this.retrieveSelectedClaim.statusOfApprovers[0].status=='REJECTED' && this.retrieveSelectedClaim.statusOfApprovers[1].status=='REJECTED' )||
           (this.retrieveSelectedClaim.statusOfApprovers[0].status=='APPROVED' && this.retrieveSelectedClaim.statusOfApprovers[1].status=='APPROVED' ) ){
             axios.delete(`/two/claim/api/deleteClaimUsingId/${claim.claimId}`).then(()=>{
-              axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.PresidentInfo.id}`).then((res)=>{
-                this.getPresidentTeamClaims(res.data.data.employeeClaims)
-              })
+              this.getPresidentClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.PresidentInfo.id})
+
             })
           }
       })
@@ -309,21 +289,16 @@ export default{
         if(this.retrieveSelectedClaim.statusOfApprovers[0].status=='PENDING'){
 
         axios.put('/two/claim/api/updateClaimStatus',{claimId:this.retrieveSelectedClaim.claimId,approvedClaimAmount:this.retrieveSelectedClaim.amount,status:"APPROVED",approverId:this.PresidentInfo.id}).then(()=>{
-          axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.PresidentInfo.id}`).then((resp)=>{
-            this.getPresidentTeamClaims(resp.data.data.employeeClaims)
+          this.getPresidentClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.PresidentInfo.id})
 
-          })
         })}
       },
       reject(){
         if(this.retrieveSelectedClaim.statusOfApprovers[0].status=='PENDING'){
 
         axios.put('/two/claim/api/updateClaimStatus',{claimId:this.retrieveSelectedClaim.claimId,approvedClaimAmount:this.retrieveSelectedClaim.amount,status:"REJECTED",approverId:this.PresidentInfo.id}).then(()=>{
-          axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.PresidentInfo.id}`).then((resp)=>{
-            this.getPresidentTeamClaims(resp.data.data.employeeClaims)
-          
+          this.getPresidentClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.PresidentInfo.id})
 
-          })
         })}
       }
 

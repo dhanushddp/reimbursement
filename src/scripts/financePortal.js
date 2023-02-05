@@ -51,12 +51,8 @@ export default{
     axios.get(`/two/employee/api/getEmployeeDetailsByEmail?emailId=${this.email}`).then((res)=>{
       this.getFinanceInfo(res.data.data)
       this.FinanceInfo=res.data.data
-      axios.get(`/two/claim/api/getClaimsByEmployeeId/${res.data.data.id}`).then((resp)=>{
-        this.getFinanceClaims(resp.data.data.myClaims)
-        this.getFinanceTeamClaims(resp.data.data.employeeClaims)
-        this.assignedClaims=resp.data.data.myClaims
-        console.log(this.assignedClaims)
-      })
+      this.getFinanceClaims({success:this.onSuccess,fail:this.onFail,employeeId:res.data.data.id})
+
       console.log(res.data.data)
     })
   
@@ -65,7 +61,7 @@ export default{
      ...mapGetters('financeStore',['retrieveFinanceClaims','retrieveSelectedClaim','retrieveFinanceTeamClaims'])
   },
   methods:{
-    ...mapActions('financeStore',['getFinanceInfo','getFinanceClaims','getSelectedClaim','getFinanceTeamClaims']),
+    ...mapActions('financeStore',['getFinanceInfo','getFinanceClaims','getSelectedClaim','getFinanceTeamClaims','getFinanceClaimsStatus']),
       submitForm(){
           this.form.stationeries = this.value
           if(this.form.category)
@@ -78,13 +74,8 @@ export default{
                    if(this.form.claimAmount && this.form.description){
                     axios.post(`/two/claim/api/addClaim`,{employeeId:this.FinanceInfo.id,claimCategoryId:parseInt(this.form.category),imageUrl:null,fromDate:new Date(this.form.startDate),toDate:new Date(this.form.endDate),officeStationeryType:null,description:this.form.description,claimAmount:this.form.claimAmount}).then((res)=>{
                       console.log(res)
-                      axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.FinanceInfo.id}`).then((resp)=>{
-                        this.getFinanceClaims(resp.data.data.myClaims)
-                        window.location.reload()
+                      this.getFinanceClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.FinanceInfo.id})
 
-                        this.assignedClaims=resp.data.data.myClaims
-                        console.log(this.assignedClaims)
-                      })
                     })
                    }
 
@@ -102,13 +93,8 @@ export default{
                     if(this.form.claimAmount && this.form.description){
                       axios.post(`/two/claim/api/addClaim`,{employeeId:this.FinanceInfo.id,claimCategoryId:parseInt(this.form.category),imageUrl:null,fromDate:null,toDate:null,officeStationaryType:this.stationeriesValue,description:this.form.description,claimAmount:this.form.claimAmount}).then((res)=>{
                       console.log(res)
-                      axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.FinanceInfo.id}`).then((resp)=>{
-                        this.getFinanceClaims(resp.data.data.myClaims)
-                        window.location.reload()
+                      this.getFinanceClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.FinanceInfo.id})
 
-                        this.assignedClaims=resp.data.data.myClaims
-                        console.log(this.assignedClaims)
-                      })
                     })
                      }else{
                       this.allDetails=true
@@ -135,13 +121,8 @@ export default{
                 if(this.form.claimAmount && this.form.description){
                   axios.post(`/two/claim/api/addClaim`,{employeeId:this.FinanceInfo.id,claimCategoryId:parseInt(this.form.category),imageUrl:null,fromDate:null,toDate:null,officeStationeryType:null,description:this.form.description,claimAmount:this.form.claimAmount}).then((res)=>{
                     console.log(res)
-                    axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.FinanceInfo.id}`).then((resp)=>{
-                      this.getFinanceClaims(resp.data.data.myClaims)
-                      window.location.reload()
+                    this.getFinanceClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.FinanceInfo.id})
 
-                      this.assignedClaims=resp.data.data.myClaims
-                      console.log(this.assignedClaims)
-                    })
                   })
                   console.log(this.form)
                  }else{
@@ -167,13 +148,13 @@ export default{
         if(status=="ALL")
         {
           axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.FinanceInfo.id}`).then((resp)=>{
-            this.getFinanceClaims(resp.data.data.myClaims)
+            this.getFinanceClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.FinanceInfo.id})
             this.assignedClaims=resp.data.data
             console.log(this.assignedClaims)
           })
         }else{
           axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.FinanceInfo.id}?status=${status}`).then((resp)=>{
-            this.getFinanceClaims(resp.data.data.myClaims)
+            this.getFinanceClaimsStatus(resp.data.data.myClaims)
             this.assignedClaims=resp.data.data
             console.log(this.assignedClaims)
           })
@@ -255,6 +236,13 @@ export default{
         })
         
       },
+      onSuccess(){
+        console.log("success")
+      },
+      onFail(){
+        console.log("fail")
+
+      },
       postComment(){
         axios.post(`/two/claim/api/addComment`,{comments:this.userComment,employeeId:this.FinanceInfo.id,claimId:this.recentClaim.claimId}).then((res)=>{
           console.log(res)
@@ -297,10 +285,8 @@ export default{
           if(this.retrieveSelectedClaim.statusOfApprovers[0].status=='PENDING'){
 
           axios.put('/two/claim/api/updateClaimStatus',{claimId:this.retrieveSelectedClaim.claimId,approvedClaimAmount:this.retrieveSelectedClaim.amount,status:"APPROVED",approverId:this.FinanceInfo.id}).then(()=>{
-            axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.FinanceInfo.id}`).then((resp)=>{
-              this.getFinanceTeamClaims(resp.data.data.employeeClaims)
+            this.getFinanceClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.FinanceInfo.id})
 
-            })
           })
         }}
       },
@@ -308,9 +294,8 @@ export default{
         if(this.retrieveSelectedClaim.statusOfApprovers[0].status=='PENDING'){
 
         axios.put('/two/claim/api/updateClaimStatus',{claimId:this.retrieveSelectedClaim.claimId,approvedClaimAmount:this.retrieveSelectedClaim.amount,status:"REJECTED",approverId:this.FinanceInfo.id}).then(()=>{
-          axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.FinanceInfo.id}`).then((resp)=>{
-            this.getFinanceTeamClaims(resp.data.data.employeeClaims)
-          })
+          this.getFinanceClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.FinanceInfo.id})
+
         })
       }
       },
@@ -320,9 +305,8 @@ export default{
          
           if(this.retrieveSelectedClaim.statusOfApprovers[0].status=='PENDING' && this.retrieveSelectedClaim.statusOfApprovers[1].status=='PENDING'){
             axios.delete(`/two/claim/api/deleteClaimUsingId/${claim.claimId}`).then(()=>{
-              axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.FinanceInfo.id}`).then((res)=>{
-                this.getFinanceClaims(res.data.data.myClaims)
-              })
+              this.getFinanceClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.FinanceInfo.id})
+
             })
           }
           })
@@ -333,9 +317,8 @@ export default{
           if((this.retrieveSelectedClaim.statusOfApprovers[0].status=='REJECTED' && this.retrieveSelectedClaim.statusOfApprovers[1].status=='REJECTED' )||
           (this.retrieveSelectedClaim.statusOfApprovers[0].status=='APPROVED' && this.retrieveSelectedClaim.statusOfApprovers[1].status=='APPROVED' ) ){
             axios.delete(`/two/claim/api/deleteClaimUsingId/${claim.claimId}`).then(()=>{
-              axios.get(`/two/claim/api/getClaimsByEmployeeId/${this.FinanceInfo.id}`).then((res)=>{
-                this.getFinanceTeamClaims(res.data.data.employeeClaims)
-              })
+              this.getFinanceClaims({success:this.onSuccess,fail:this.onFail,employeeId:this.FinanceInfo.id})
+
             })
           }
       })

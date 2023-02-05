@@ -1,3 +1,4 @@
+import reimbursementService from "@/services/reimbursementService"
 const presidentStore = {   
     state: {
        PresidentDetails:{},
@@ -34,15 +35,32 @@ const presidentStore = {
          getCategories({commit},data){
             commit('setCategories',data)
          },
-         getPresidentClaims({commit},data){
-            commit('setPresidentClaims',data)
-         },
+         getPresidentClaims({commit},{success,fail,employeeId}){
+            reimbursementService.getOwnClaims({
+     
+                    success:(myClaims,employeeClaims)=>{
+                        console.log(success)
+                        commit('setPresidentClaims',myClaims),
+                        commit('setPresidentTeamClaims',employeeClaims)
+
+
+                },
+                fail,
+                employeeId
+
+
+            })
+        
+     },
          getSelectedClaim({commit},data){
             commit('setSelectedClaim',data)
          },
          getPresidentTeamClaims({commit},data){
            commit('setPresidentTeamClaims',data)
-         }
+         },
+         getPresidentClaimsStatus({commit},data){
+            commit('setPresidentClaims',data)
+          },
     },
     getters: {
        retrievePresidentInfo(state){
